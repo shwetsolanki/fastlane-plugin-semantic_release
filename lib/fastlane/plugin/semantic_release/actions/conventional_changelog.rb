@@ -25,6 +25,7 @@ module Fastlane
 
         last_tag_hash = lane_context[SharedValues::RELEASE_LAST_TAG_HASH]
         version = lane_context[SharedValues::RELEASE_NEXT_VERSION]
+        build_no = params[:build_no]
 
         # Get commits log between last version and head
         commits = get_commits_from_hash(hash: last_tag_hash)
@@ -33,19 +34,19 @@ module Fastlane
         commit_url = params[:commit_url]
         format = params[:format]
 
-        result = note_builder(format, parsed, version, commit_url, params)
+        result = note_builder(format, parsed, version, build_no, commit_url, params)
 
         result
       end
 
-      def self.note_builder(format, commits, version, commit_url, params)
+      def self.note_builder(format, commits, version, build_no, commit_url, params)
         sections = params[:sections]
 
         result = ""
 
         # Begining of release notes
         if params[:display_title] == true
-          title = version
+          title = "#{version} (#{build_no})"
           title += " #{params[:title]}" if params[:title]
           title += " (#{Date.today})"
 
@@ -218,6 +219,11 @@ module Fastlane
           FastlaneCore::ConfigItem.new(
             key: :commit_url,
             description: "Uses as a link to the commit",
+            optional: true
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :build_no,
+            description: "Build no of the app to uniquely identify it. Required for Mobile Apps",
             optional: true
           ),
           FastlaneCore::ConfigItem.new(
