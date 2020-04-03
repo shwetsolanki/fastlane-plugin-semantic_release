@@ -47,11 +47,12 @@ module Fastlane
         # Begining of release notes
         if params[:display_title] == true
           title = "#{version} (#{build_no})"
-          title += " #{params[:title]}" if params[:title]
           title += " (#{Date.today})"
 
           result = style_text(title, format, "title").to_s
           result += "\n \n "
+          result += " #{params[:title]}" if params[:title]
+          result += "\n \n " if params[:title]
         end
 
         params[:order].each do |type|
